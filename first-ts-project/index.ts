@@ -1,6 +1,8 @@
 import express from "express";
 const app = express();
 
+app.use(express.json());
+
 import qs from "qs";
 app.set("query parser", (str: string) =>
   qs.parse(str, {
@@ -9,9 +11,32 @@ app.set("query parser", (str: string) =>
 );
 
 import { calculateBmi } from "./bmiCalculator";
+import { calculateExercises } from "./exerciseCalculator";
 
 app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack!");
+});
+
+app.post("/", (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { daily_exercises, target } = req.body;
+
+  if (!daily_exercises || !target) {
+    res.status(400).json({
+      error: "parameters missing",
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  if (isNaN(target) || !Array.isArray(daily_exercises) || daily_exercises.find((h) => isNaN(h))
+  ) {
+    res.status(400).json({
+      error: "malformatted parameters",
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  res.json(calculateExercises(daily_exercises, target));
 });
 
 app.get("/bmi", (req, res) => {

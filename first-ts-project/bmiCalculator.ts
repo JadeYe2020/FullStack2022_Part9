@@ -1,19 +1,19 @@
-interface TwoNumberValues {
-  v1: number;
-  v2: number;
-}
+// interface TwoNumberValues {
+//   v1: number;
+//   v2: number;
+// }
 
-const parseArguments = (args: Array<string>): TwoNumberValues => {
-  if (args.length != 4) throw new Error("Needs 2 arguments");
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      v1: Number(args[2]),
-      v2: Number(args[3]),
-    };
-  } else {
-    throw new Error("Provided values were not numbers!");
-  }
-};
+// const parseArguments = (args: Array<string>): TwoNumberValues => {
+//   if (args.length != 4) throw new Error("Needs 2 arguments");
+//   if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+//     return {
+//       v1: Number(args[2]),
+//       v2: Number(args[3]),
+//     };
+//   } else {
+//     throw new Error("Provided values were not numbers!");
+//   }
+// };
 
 export const calculateBmi = (height: number, weight: number): string => {
   if (height === 0) {
@@ -34,13 +34,13 @@ export const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-try {
-  const { v1, v2 } = parseArguments(process.argv);
-  console.log(calculateBmi(v1, v2));
-} catch (error: unknown) {
-  let errMsg = "some error happened";
-  if (error instanceof Error) {
-    errMsg += " Error: " + error.message;
-  }
-  console.log(errMsg);
-}
+// try {
+//   const { v1, v2 } = parseArguments(process.argv);
+//   console.log(calculateBmi(v1, v2));
+// } catch (error: unknown) {
+//   let errMsg = "some error happened";
+//   if (error instanceof Error) {
+//     errMsg += " Error: " + error.message;
+//   }
+//   console.log(errMsg);
+// }
