@@ -1,8 +1,11 @@
 import patientData from "../../data/patients";
-import { Patient } from "../types";
+import { Patient, PatientEntry, NewPatienEntry } from "../types";
+import { v1 as uuid } from "uuid";
+
+const patients: Patient[] = patientData;
 
 const getEntries = (): Patient[] => {
-  return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
     dateOfBirth,
@@ -11,8 +14,16 @@ const getEntries = (): Patient[] => {
   }));
 };
 
-const addPatient = () => {
-  return null;
+const addPatient = (entry: NewPatienEntry): PatientEntry => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const id = uuid();
+  const newPatientEntry = {
+    id,
+    ...entry,
+  };
+
+  patients.push(newPatientEntry);
+  return newPatientEntry;
 };
 
 export default {
