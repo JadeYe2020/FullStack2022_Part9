@@ -10,7 +10,12 @@ router.get("/", (_req, res) => {
 
 router.get("/:id", (req, res) => {
   try {
-    res.json(patientService.getPatient(req.params.id));
+    const patientFound = patientService.getPatient(req.params.id);
+    if (patientFound) {
+      res.json(patientFound);
+    } else {
+      res.status(404).end();
+    }
   } catch (error) {
     let errorMessage = "Something went wrong.";
     if (error instanceof Error) {
