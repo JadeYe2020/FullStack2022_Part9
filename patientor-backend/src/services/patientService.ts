@@ -1,10 +1,31 @@
 import patientData from "../../data/patients";
-import { Patient, PatientEntry, NewPatienEntry } from "../types";
+import {
+  PatientToDisplay,
+  PatientEntry,
+  NewPatienEntry,
+  Patient,
+  Entry,
+  Gender,
+} from "../types";
 import { v1 as uuid } from "uuid";
 
-const patients: Patient[] = patientData;
+const patients: PatientToDisplay[] = patientData;
 
-const getEntries = (): Patient[] => {
+const getPatient = (id: string): Patient | null => {
+  const patientFound = patientData.find((p) => p.id === id);
+  const entries: Entry[] = [];
+
+  if (patientFound) {
+    const gender = Object.entries(Gender).find(
+      ([_key, value]) => value === patientFound.gender
+    )?.[0] as Gender;
+    return { ...patientFound, gender, entries };
+  } else {
+    return null;
+  }
+};
+
+const getEntries = (): PatientToDisplay[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
@@ -28,5 +49,6 @@ const addPatient = (entry: NewPatienEntry): PatientEntry => {
 
 export default {
   getEntries,
+  getPatient,
   addPatient,
 };
