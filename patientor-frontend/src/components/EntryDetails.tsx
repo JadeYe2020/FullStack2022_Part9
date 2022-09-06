@@ -5,7 +5,27 @@ import {
   HealthCheckEntry,
   HospitalEntry,
   OccupationalHealthcareEntry,
+  HealthCheckRating,
 } from "../types";
+import {
+  MedicalServices,
+  BusinessCenter,
+  Vaccines,
+  Favorite,
+} from "@mui/icons-material";
+
+const HealthCheckRatingSymbol = ({ rating }: { rating: HealthCheckRating }) => {
+  switch (rating) {
+    case HealthCheckRating.Healthy:
+      return <Favorite sx={{ color: "green" }} />;
+    case HealthCheckRating.LowRisk:
+      return <Favorite sx={{ color: "yellow" }} />;
+    case HealthCheckRating.HighRisk:
+      return <Favorite sx={{ color: "purple" }} />;
+    default:
+      return <Favorite sx={{ color: "black" }} />;
+  }
+};
 
 const HealthCheckEntryDetails = ({
   entry,
@@ -17,12 +37,12 @@ const HealthCheckEntryDetails = ({
   return (
     <div className="Entry">
       <div>
-        {entry.date} {entry.type}
+        {entry.date} <MedicalServices />
       </div>
       <div>
         <em>{entry.description}</em>
       </div>
-      <div>{entry.healthCheckRating}</div>
+      <HealthCheckRatingSymbol rating={entry.healthCheckRating} />
       {entry.diagnosisCodes ? (
         <ul>
           {entry.diagnosisCodes.map((d) => (
@@ -47,7 +67,7 @@ const HospitalEntryDetails = ({
   return (
     <div className="Entry">
       <div>
-        {entry.date} {entry.type}
+        {entry.date} <Vaccines />
       </div>
       <div>
         <em>{entry.description}</em>
@@ -79,7 +99,7 @@ const OccupationalHealthcareEntryDetails = ({
   return (
     <div className="Entry">
       <div>
-        {entry.date} {entry.type} {entry.employerName}
+        {entry.date} <BusinessCenter /> <em>{entry.employerName}</em>
       </div>
       <div>
         <em>{entry.description}</em>

@@ -6,7 +6,7 @@ import { Patient, Gender, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryDetails from "../components/EntryDetails";
 import { Female, Male } from "@mui/icons-material";
-import { Button } from "@material-ui/core";
+import { Button, Stack, Paper } from "@mui/material";
 
 const PatientInfoPage = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
@@ -48,11 +48,13 @@ const PatientInfoPage = () => {
     }
 
     return (
-      <div>
+      <Stack spacing={2}>
         {entries.map((e) => (
-          <EntryDetails key={e.id} entry={e} diagnoses={diagnoses} />
+          <Paper key={e.id} elevation={3} sx={{ padding: 1 }}>
+            <EntryDetails entry={e} diagnoses={diagnoses} />
+          </Paper>
         ))}
-      </div>
+      </Stack>
     );
   };
 
@@ -60,13 +62,10 @@ const PatientInfoPage = () => {
     switch (gender) {
       case "female":
         return <Female />;
-        break;
       case "male":
         return <Male />;
-        break;
       default:
         return null;
-        break;
     }
   };
 
@@ -79,6 +78,7 @@ const PatientInfoPage = () => {
       <div>occupation: {patient.occupation}</div>
       <h3>entries</h3>
       <Entries entries={patient.entries} />
+      <br />
       <Button variant="contained" color="primary">
         add new entry
       </Button>
