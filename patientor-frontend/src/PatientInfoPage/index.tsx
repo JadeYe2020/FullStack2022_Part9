@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom";
 import { useStateValue } from "../state";
 import { Patient, Gender, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
+import EntryDetails from "../components/EntryDetails";
 import { Female, Male } from "@mui/icons-material";
+import { Button } from "@material-ui/core";
 
 const PatientInfoPage = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
@@ -47,31 +49,9 @@ const PatientInfoPage = () => {
 
     return (
       <div>
-        <h3>entries</h3>
-        {entries.map((e) => {
-          if (e.diagnosisCodes) {
-            return (
-              <div>
-                <p key={e.id}>
-                  {e.date} <em>{e.description}</em>{" "}
-                </p>
-                <ul>
-                  {e.diagnosisCodes.map((d, index) => (
-                    <li key={index}>
-                      {d} {diagnoses[d].name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          } else {
-            return (
-              <p key={e.id}>
-                {e.date} <em>{e.description}</em>{" "}
-              </p>
-            );
-          }
-        })}
+        {entries.map((e) => (
+          <EntryDetails key={e.id} entry={e} diagnoses={diagnoses} />
+        ))}
       </div>
     );
   };
@@ -97,7 +77,11 @@ const PatientInfoPage = () => {
       </h2>
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
+      <h3>entries</h3>
       <Entries entries={patient.entries} />
+      <Button variant="contained" color="primary">
+        add new entry
+      </Button>
     </div>
   );
 };
