@@ -10,6 +10,24 @@ const router = express_1.default.Router();
 router.get("/", (_req, res) => {
     res.send(patientService_1.default.getEntries());
 });
+router.get("/:id", (req, res) => {
+    try {
+        const patientFound = patientService_1.default.getPatient(req.params.id);
+        if (patientFound) {
+            res.json(patientFound);
+        }
+        else {
+            res.status(404).end();
+        }
+    }
+    catch (error) {
+        let errorMessage = "Something went wrong.";
+        if (error instanceof Error) {
+            errorMessage += " Error: " + error.message;
+        }
+        res.status(400).send(errorMessage);
+    }
+});
 router.post("/", (req, res) => {
     try {
         const newPatientEntry = (0, utils_1.default)(req.body);
