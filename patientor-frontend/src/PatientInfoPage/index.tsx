@@ -7,7 +7,7 @@ import { apiBaseUrl } from "../constants";
 import { Female, Male } from "@mui/icons-material";
 
 const PatientInfoPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<Patient | null>(null);
   const id = useParams().id as string;
 
@@ -56,8 +56,10 @@ const PatientInfoPage = () => {
                   {e.date} <em>{e.description}</em>{" "}
                 </p>
                 <ul>
-                  {e.diagnosisCodes.map((d) => (
-                    <li key={d}>{d}</li>
+                  {e.diagnosisCodes.map((d, index) => (
+                    <li key={index}>
+                      {d} {diagnoses[d].name}
+                    </li>
                   ))}
                 </ul>
               </div>
