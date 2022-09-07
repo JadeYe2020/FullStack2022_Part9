@@ -2,15 +2,17 @@ import React from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useStateValue } from "../state";
-import { Patient, Gender, Entry } from "../types";
+import { Patient, Gender, Entry, EntryFormValues } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryDetails from "../components/EntryDetails";
+import AddEntryForm from "../components/AddEntryForm";
 import { Female, Male } from "@mui/icons-material";
 import { Button, Stack, Paper } from "@mui/material";
 
 const PatientInfoPage = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<Patient | null>(null);
+  const [formOpened, setFormOpened] = React.useState<boolean>(false);
   const id = useParams().id as string;
 
   React.useEffect(() => {
@@ -34,7 +36,7 @@ const PatientInfoPage = () => {
     } else {
       void fetchPatient(id);
     }
-  }, [dispatch]);
+  }, [dispatch, patients]);
 
   // return null if the id cannot be found
   if (!patient) {
@@ -46,7 +48,6 @@ const PatientInfoPage = () => {
     if (!entries.length) {
       return null;
     }
-
     return (
       <Stack spacing={2}>
         {entries.map((e) => (
@@ -69,6 +70,33 @@ const PatientInfoPage = () => {
     }
   };
 
+  const onSubmit = async (values: EntryFormValues) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      dispatch({
+        type: "ADD_ENTRY",
+        payload: { patient, entry: newEntry },
+      });
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+        // setError(
+        //   String(e?.response?.data?.error) || "Unrecognized axios error"
+        // );
+      } else {
+        console.error("Unknown error", e);
+        // setError("Unknown error");
+      }
+    }
+  };
+
+  const onCancel = () => {
+    setFormOpened(false);
+  };
+
   return (
     <div>
       <h2>
@@ -79,9 +107,16 @@ const PatientInfoPage = () => {
       <h3>entries</h3>
       <Entries entries={patient.entries} />
       <br />
-      <Button variant="contained" color="primary">
+      <Button
+        onClick={() => setFormOpened(true)}
+        variant="contained"
+        color="primary"
+      >
         add new entry
       </Button>
+      {formOpened ? (
+        <AddEntryForm onSubmit={onSubmit} onCancel={onCancel} />
+      ) : null}
     </div>
   );
 };

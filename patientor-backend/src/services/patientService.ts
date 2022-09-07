@@ -52,8 +52,6 @@ const addEntry = (entry: NewMedEntry, patientId: string): Entry => {
     patientToUpdate.entries.push(newMedEntry);
   }
 
-  console.log("patientToUpdate", patientToUpdate);
-
   return newMedEntry;
 };
 
