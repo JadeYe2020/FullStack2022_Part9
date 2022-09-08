@@ -30,7 +30,7 @@ const parseTextField = (input: unknown, fieldName: string) => {
 
 const parseDate = (date: unknown) => {
   if (!date || !isString(date) || !isDate(date)) {
-    throw new Error("Incorrect or missing date of birth info");
+    throw new Error("Incorrect or missing date info");
   }
   return date;
 };
@@ -100,7 +100,7 @@ const parseDischargeInfo = (info: unknown) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const toNewMedEntry = (obj: any): NewMedEntry => {
   const description = parseTextField(obj.description, "description");
-  const date = parseTextField(obj.date, "date");
+  const date = parseDate(obj.date);
   const specialist = parseTextField(obj.specialist, "specialist");
   const type = parseType(obj.type);
 

@@ -51,9 +51,9 @@ router.post("/:id/entries", (req, res) => {
   } catch (error) {
     let errorMessage = "Something went wrong.";
     if (error instanceof Error) {
-      errorMessage += " Error: " + error.message;
+      errorMessage += error.message;
     }
-    res.status(400).send(errorMessage);
+    res.status(400).send({ error: errorMessage });
   }
 });
 

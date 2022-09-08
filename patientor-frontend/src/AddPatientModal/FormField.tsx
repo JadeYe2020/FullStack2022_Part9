@@ -119,8 +119,6 @@ export const DiagnosisSelection = ({
   }, [selectedDiagnoses]);
 
   const onChange = (data: string[]) => {
-    console.log("data", data);
-
     setFieldTouched(field, true);
     setDiagnoses([...data]);
   };

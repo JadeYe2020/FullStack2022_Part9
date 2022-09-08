@@ -96,9 +96,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
-        console.log("values", values);
-
+      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (
           <Form className="form ui">
             <Field
@@ -148,6 +146,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                   }}
                   type="submit"
                   variant="contained"
+                  color="primary"
                   disabled={!dirty || !isValid}
                 >
                   Add
