@@ -77,19 +77,33 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         date: "",
         specialist: "",
         type: "HealthCheck",
-        healthCheckRating: HealthCheckRating.CriticalRisk,
+        healthCheckRating: HealthCheckRating.Healthy,
+        diagnosisCodes: undefined,
       }}
       onSubmit={onSubmit}
-      // validate={(values) => {
-      //   /// ...
-      // }}
+      validate={(values) => {
+        const requiredError = "Field is required";
+        const errors: { [field: string]: string } = {};
+        if (!values.description) {
+          errors.description = requiredError;
+        }
+        if (!values.date) {
+          errors.date = requiredError;
+        }
+        if (!values.specialist) {
+          errors.specialist = requiredError;
+        }
+        return errors;
+      }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
+        console.log("values", values);
+
         return (
           <Form className="form ui">
             <Field
               label="Date"
-              placeholder="Date"
+              placeholder="YYYY-MM-DD"
               name="date"
               component={TextField}
             />

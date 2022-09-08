@@ -110,7 +110,7 @@ const toNewMedEntry = (obj: any): NewMedEntry => {
     specialist,
     type,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    diagnosisCodes: obj.diagnoseCodes,
+    diagnosisCodes: obj.diagnosisCodes,
   };
 
   switch (obj.type) {

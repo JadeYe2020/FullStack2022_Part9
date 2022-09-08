@@ -8,11 +8,13 @@ import EntryDetails from "../components/EntryDetails";
 import AddEntryForm from "../components/AddEntryForm";
 import { Female, Male } from "@mui/icons-material";
 import { Button, Stack, Paper } from "@mui/material";
+import { Alert } from "@material-ui/lab";
 
 const PatientInfoPage = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<Patient | null>(null);
   const [formOpened, setFormOpened] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>();
   const id = useParams().id as string;
 
   React.useEffect(() => {
@@ -80,21 +82,23 @@ const PatientInfoPage = () => {
         type: "ADD_ENTRY",
         payload: { patient, entry: newEntry },
       });
+      setFormOpened(false);
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         console.error(e?.response?.data || "Unrecognized axios error");
-        // setError(
-        //   String(e?.response?.data?.error) || "Unrecognized axios error"
-        // );
+        setError(
+          String(e?.response?.data?.error) || "Unrecognized axios error"
+        );
       } else {
         console.error("Unknown error", e);
-        // setError("Unknown error");
+        setError("Unknown error");
       }
     }
   };
 
   const onCancel = () => {
     setFormOpened(false);
+    setError(undefined);
   };
 
   return (
@@ -114,6 +118,7 @@ const PatientInfoPage = () => {
       >
         add new entry
       </Button>
+      {error && <Alert severity="error">{`Error: ${error}`}</Alert>}
       {formOpened ? (
         <AddEntryForm onSubmit={onSubmit} onCancel={onCancel} />
       ) : null}
