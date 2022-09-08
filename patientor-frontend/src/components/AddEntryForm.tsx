@@ -11,16 +11,16 @@ import {
 } from "formik";
 import { Select, MenuItem, InputLabel, Grid, Button } from "@material-ui/core";
 
-// type TypeOption = {
-//   value: EntryType;
-//   label: string;
-// };
+type TypeOption = {
+  value: "HealthCheck" | "Hospital" | "OccupationalHealthcare";
+  label: string;
+};
 
-// const typeOptions: TypeOption[] = [
-//   { value: EntryType.HealthCheck, label: "Health Check" },
-//   { value: EntryType.Hospital, label: "Hospital" },
-//   { value: EntryType.OccupationalHealthcare, label: "Occupational Healthcare" },
-// ];
+const typeOptions: TypeOption[] = [
+  { value: "HealthCheck", label: "Health Check" },
+  { value: "Hospital", label: "Hospital" },
+  { value: "OccupationalHealthcare", label: "Occupational Healthcare" },
+];
 
 type HealthRatingOption = {
   value: HealthCheckRating;
@@ -37,7 +37,7 @@ const ratingOptions: HealthRatingOption[] = [
 type SelectFieldProps = {
   name: string;
   label: string;
-  options: HealthRatingOption[];
+  options: HealthRatingOption[] | TypeOption[];
 };
 
 const FormikSelect = ({ field, ...props }: FieldProps) => (
@@ -89,6 +89,11 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         }
         if (!values.date) {
           errors.date = requiredError;
+        } else if (
+          !Date.parse(values.date) ||
+          !/^[0-9]{4}(-[0-9]{1,2}){2}$/i.test(values.date)
+        ) {
+          errors.date = "Date is incorrectly formatted";
         }
         if (!values.specialist) {
           errors.specialist = requiredError;
@@ -96,9 +101,12 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values, errors }) => {
+        // console.log(values);
+        console.log("errors", errors);
         return (
           <Form className="form ui">
+            <SelectField label="Entry Type" name="type" options={typeOptions} />
             <Field
               label="Date"
               placeholder="YYYY-MM-DD"
@@ -122,11 +130,48 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               setFieldTouched={setFieldTouched}
               diagnoses={Object.values(diagnoses)}
             />
-            <SelectField
-              label="Healthcheck Rating"
-              name="healthCheckRating"
-              options={ratingOptions}
-            />
+            {values.type === "HealthCheck" && (
+              <SelectField
+                label="Healthcheck Rating"
+                name="healthCheckRating"
+                options={ratingOptions}
+              />
+            )}
+            {values.type === "Hospital" && (
+              <>
+                <Field
+                  label="Discharge Date"
+                  placeholder="YYYY-MM-DD"
+                  name="discharge.date"
+                  component={TextField}
+                  validate={(value: string) => {
+                    let error;
+                    if (!value) {
+                      error = "Discharge Date is required";
+                    } else if (
+                      !Date.parse(value) ||
+                      !/^[0-9]{4}(-[0-9]{1,2}){2}$/i.test(value)
+                    ) {
+                      error = "Discharge Date is formatted incorrectly";
+                    }
+                    return error;
+                  }}
+                />
+                <Field
+                  label="Discharge Criteria"
+                  placeholder="Discharge Criteria"
+                  name="discharge.criteria"
+                  component={TextField}
+                  validate={(value: string) => {
+                    let error;
+                    if (!value) {
+                      error = "Discharge Criteria is required";
+                    }
+                    return error;
+                  }}
+                />
+              </>
+            )}
             <Grid>
               <Grid item>
                 <Button
