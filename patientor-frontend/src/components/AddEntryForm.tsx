@@ -1,14 +1,7 @@
 import { useStateValue } from "../state";
 import { EntryFormValues, HealthCheckRating } from "../types";
 import { DiagnosisSelection, TextField } from "../AddPatientModal/FormField";
-import {
-  // ErrorMessage,
-  Field,
-  Formik,
-  Form,
-  FieldProps,
-  // FormikProps,
-} from "formik";
+import { Field, Formik, Form, FieldProps } from "formik";
 import { Select, MenuItem, InputLabel, Grid, Button } from "@material-ui/core";
 
 type TypeOption = {
@@ -98,12 +91,13 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
+        if (values.type === "OccupationalHealthcare" && !values.employerName) {
+          errors.employerName = requiredError;
+        }
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched, values, errors }) => {
-        // console.log(values);
-        console.log("errors", errors);
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
         return (
           <Form className="form ui">
             <SelectField label="Entry Type" name="type" options={typeOptions} />
@@ -139,6 +133,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
             )}
             {values.type === "Hospital" && (
               <>
+                <h4>Discharge info</h4>
                 <Field
                   label="Discharge Date"
                   placeholder="YYYY-MM-DD"
@@ -166,6 +161,57 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                     let error;
                     if (!value) {
                       error = "Discharge Criteria is required";
+                    }
+                    return error;
+                  }}
+                />
+              </>
+            )}
+            {values.type === "OccupationalHealthcare" && (
+              <>
+                <Field
+                  label="Employer Name"
+                  placeholder="Employer Name"
+                  name="employerName"
+                  component={TextField}
+                />
+                <h4>Sick leave info</h4>
+                <Field
+                  label="Start date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.startDate"
+                  component={TextField}
+                  validate={(value: string) => {
+                    let error;
+                    if (
+                      value &&
+                      (!Date.parse(value) ||
+                        !/^[0-9]{4}(-[0-9]{1,2}){2}$/i.test(value))
+                    ) {
+                      error = "Start Date is formatted incorrectly";
+                    }
+                    if (!value && values.sickLeave?.endDate) {
+                      error = "Please fill out both start and end dates";
+                    }
+                    return error;
+                  }}
+                />
+                <Field
+                  label="End date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.endDate"
+                  component={TextField}
+                  validate={(value: string) => {
+                    let error;
+                    if (
+                      value &&
+                      (!Date.parse(value) ||
+                        !/^[0-9]{4}(-[0-9]{1,2}){2}$/i.test(value))
+                    ) {
+                      error = "End Date is formatted incorrectly";
+                    }
+                    if (!value && values.sickLeave?.startDate) {
+                      error = "Please fill out both start and end dates";
                     }
                     return error;
                   }}
